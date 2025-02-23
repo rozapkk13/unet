@@ -1,3 +1,5 @@
+import os
+os.environ["SM_FRAMEWORK"] = "tf.keras"
 import segmentation_models as sm
 from tensorflow.keras.optimizers import Adam
 
