@@ -1,20 +1,24 @@
 import os
 os.environ["SM_FRAMEWORK"] = "tf.keras"
-import segmentation_models as sm
 from tensorflow.keras.optimizers import Adam
+import segmentation_models as sm
 
-def unet(input_size=(256, 256, 3), pretrained_weights=None):
-    """
-    Load a pretrained U-Net model with a ResNet34 encoder.
-    """
-    # Load pretrained U-Net with ResNet34 as the encoder
-    model = sm.Unet('resnet34', encoder_weights='imagenet', input_shape=input_size)
+def unet(input_size=(256, 256, 3), pretrained_weights=None):  # ✅ Change input_size to (256,256,3)
+    model = sm.Unet(
+        'resnet34', 
+        encoder_weights='imagenet', 
+        input_shape=input_size,  # ✅ Fix input shape
+        classes=1,               
+        activation='sigmoid'      # ✅ Ensure binary segmentation output
+    )
 
-    # Compile model with binary crossentropy loss
-   model.compile(optimizer=Adam(learning_rate=1e-4), loss='binary_crossentropy', metrics=['accuracy'])
+    model.compile(
+        optimizer=Adam(learning_rate=1e-4), 
+        loss='binary_crossentropy', 
+        metrics=['accuracy']
+    )
 
-    # Load pretrained weights if provided
-    if pretrained_weights:
+    if pretrained_weights is not None:
         model.load_weights(pretrained_weights)
 
-    return model  # This should only be here once!
+    return model
